@@ -1,3 +1,4 @@
+const { json } = require('express/lib/response');
 const { Todo } = require('../models/todo.model');
 
 exports.getTodos = async (req, res) => {
@@ -86,6 +87,43 @@ exports.deleteTodo = async (req, res) => {
     res.status(200).json({
       status: 'Success',
       message: 'removed successfully'
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getDeletedTodos = async (req, res) => {
+  try {
+    const todosDeleted = await Todo.findAll({ where: { status: 'deleted' } });
+
+    res.status(200).json({
+      status: 'Success',
+      data: todosDeleted
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.reactiveTodo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const todo = await Todo.findOne({ where: { id, status: 'deleted' } });
+
+    if (!todo) {
+      res.status(404).json({
+        status: 'error',
+        message: 'Cant reactive todo with given id'
+      });
+      return;
+    }
+
+    await todo.update({ status: 'active' });
+
+    res.status(204).json({
+      status: 'Success',
+      message: 'Reactive successfully'
     });
   } catch (error) {
     console.log(error);

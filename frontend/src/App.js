@@ -15,7 +15,7 @@ const App = () => {
     await axios.post(`http://localhost:4000/api/v1/todos`, {
       content: todo.content,
     }); // req.body.content
-
+    fetchTodos();
     // setTodos((prevState) => [...prevState, todo]);
   };
 
@@ -61,7 +61,8 @@ const App = () => {
   // When component is mounted, fetch todos
   useEffect(() => {
     fetchTodos();
-  }, [todos]);
+    console.log("Efeect");
+  }, []);
 
   return (
     <div className="app">
